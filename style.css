@@ -1,0 +1,138 @@
+body {
+    font-family: Arial, sans-serif;
+    width: 300px; /* Set a fixed width for the container */
+    padding: 10px;
+    background-color: #f7f7f7;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    font-size: 20px;
+    text-align: center;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+input {
+    width: calc(100% - 20px); /* Full width minus padding */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+button {
+    width: 100%; /* Full width for main buttons */
+    height: 40px; /* Fixed height for buttons */
+    padding: 0; /* Remove extra padding */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    box-sizing: border-box; /* Include padding in width calculation */
+    margin-bottom: 10px; /* Space between buttons */
+}
+
+button:hover {
+    opacity: 0.8; /* Slightly reduce opacity on hover */
+}
+
+.tabs {
+    display: flex; /* Use flexbox for alignment */
+    justify-content: space-between; /* Space out buttons evenly */
+    margin-bottom: 10px; /* Space below the tabs */
+}
+
+.tabs button {
+    width: 48%; /* Make tabs take equal width, leaving a small gap */
+    height: 40px; /* Set a fixed height */
+    color: white; /* Text color */
+    border: none; /* Remove border */
+    border-radius: 4px; /* Match tab shape */
+    cursor: pointer; /* Change cursor on hover */
+}
+
+#dueTab {
+    background-color: #007bff; /* Blue for Due tab */
+}
+
+#completedTab {
+    background-color: #28a745; /* Green for Completed tab */
+}
+
+#addTaskButton {
+    background-color: #007bff; /* Blue for Add Task button */
+}
+
+#addTaskButton:hover {
+    background-color: #0069d9; /* Darker Blue for hover effect */
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    display: flex; /* Use flexbox for alignment */
+    flex-direction: column; /* Stack elements vertically */
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    transition: background-color 0.3s;
+}
+
+li span {
+    flex-grow: 1; /* Allow the text to take available space */
+    margin-bottom: 10px; /* Space below the task text */
+}
+
+/* New styles for the button container */
+.button-container {
+    display: flex; /* Use flexbox to align buttons */
+    justify-content: space-between; /* Space between buttons */
+    margin-top: 10px; /* Space above the button container */
+}
+
+/* Styles for individual buttons */
+.complete-button, .edit-button {
+    width: 48%; /* Make sure buttons take up equal space */
+    height: 20px; /* Match height with other buttons */
+    border: none; /* Remove border */
+    border-radius: 4px; /* Match shape */
+    color: white; /* Text color */
+    cursor: pointer; /* Change cursor on hover */
+    transition: background-color 0.3s; /* Add transition for hover effects */
+}
+
+.complete-button {
+    background-color: #28a745; /* Green for Complete */
+}
+
+.complete-button:hover {
+    background-color: #218838; /* Darker Green for hover effect */
+}
+
+.edit-button {
+    background-color: #007bff; /* Blue for Edit button */
+}
+
+.edit-button:hover {
+    background-color: #0069d9; /* Darker Blue for hover effect */
+}
+
+/* Add completed task styles */
+li.completed {
+    text-decoration: line-through;
+    color: gray;
+    background-color: #e9ecef; /* Light gray for completed tasks */
+}
+
+li:hover {
+    background-color: #f1f1f1; /* Light hover effect */
+}
