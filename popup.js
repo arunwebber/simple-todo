@@ -8,6 +8,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const dueSearch = document.getElementById("dueSearch");
     const completedSearch = document.getElementById("completedSearch");
 
+    // Task counters
+    const totalCount = document.getElementById("totalCount");
+    const pendingCount = document.getElementById("pendingCount");
+    const completedCount = document.getElementById("completedCount");
+
     // Load tasks from local storage
     loadTasks();
 
@@ -45,87 +50,92 @@ document.addEventListener("DOMContentLoaded", () => {
         const items = list.getElementsByTagName("li");
         Array.from(items).forEach(item => {
             if (item.textContent.toLowerCase().includes(query.toLowerCase())) {
-                item.style.display = "list-item"; // Show item
+                item.style.display = "list-item";
             } else {
-                item.style.display = "none"; // Hide item
+                item.style.display = "none";
             }
         });
     }
 
     function loadTasks() {
         chrome.storage.local.get("tasks", (data) => {
+            let pendingTasks = 0;
+            let completedTasks = 0;
+
             if (data.tasks) {
                 data.tasks.forEach((task) => {
                     if (task.completed) {
                         addTaskToCompletedList(task.text, task.createdDate, task.completedDate);
+                        completedTasks++;
                     } else {
                         addTaskToList(task.text, task.createdDate);
+                        pendingTasks++;
                     }
                 });
             }
+
+            updateCounters(pendingTasks, completedTasks, pendingTasks + completedTasks);
         });
     }
 
     function saveTask(taskText) {
-        const createdDate = new Date().toISOString(); // Get current date and time
+        const createdDate = new Date().toISOString();
         chrome.storage.local.get("tasks", (data) => {
             const tasks = data.tasks || [];
             tasks.push({ text: taskText, createdDate: createdDate, completed: false });
             chrome.storage.local.set({ tasks });
             addTaskToList(taskText, createdDate);
+            updateCounters(tasks.filter(task => !task.completed).length, tasks.filter(task => task.completed).length, tasks.length);
         });
     }
 
     function addTaskToList(taskText, createdDate) {
         const li = document.createElement("li");
-        li.textContent = `${taskText}(Created: ${new Date(createdDate).toLocaleString()})`;
-    
-        // Create a button container
+        li.textContent = `${taskText} (Created: ${new Date(createdDate).toLocaleString()})`;
+
         const buttonContainer = document.createElement("div");
-        buttonContainer.className = "button-container"; // Ensure you have this class in your CSS
-    
+        buttonContainer.className = "button-container";
+
         const completeButton = document.createElement("button");
         completeButton.textContent = "✓";
         completeButton.className = "complete-button";
-    
+
         completeButton.addEventListener("click", () => {
             moveToCompletedList(taskText, createdDate);
-            li.remove(); // Remove from due list
+            li.remove();
+            updateCountersAfterTaskChange();
         });
-    
+
         const editButton = document.createElement("button");
         editButton.textContent = "Edit";
         editButton.className = "edit-button";
-    
+
         editButton.addEventListener("click", () => {
             const newTaskText = prompt("Edit your task:", taskText);
             if (newTaskText !== null && newTaskText.trim()) {
                 updateTask(taskText, newTaskText, createdDate);
                 li.firstChild.nodeValue = `${newTaskText} (Created: ${new Date(createdDate).toLocaleString()})`;
-                taskText = newTaskText; // Update local taskText variable
+                taskText = newTaskText;
             }
         });
-    
-        // Append buttons to the button container
+
         buttonContainer.appendChild(editButton);
         buttonContainer.appendChild(completeButton);
-        li.appendChild(buttonContainer); // Append the button container to the list item
-    
-        // Insert the new task at the beginning of the due list
+        li.appendChild(buttonContainer);
         taskList.insertBefore(li, taskList.firstChild);
     }
-    
 
     function moveToCompletedList(taskText, createdDate) {
-        const completedDate = new Date().toISOString(); // Get current date and time
+        const completedDate = new Date().toISOString();
         addTaskToCompletedList(taskText, createdDate, completedDate);
         chrome.storage.local.get("tasks", (data) => {
             const tasks = data.tasks || [];
             const taskIndex = tasks.findIndex(task => task.text === taskText);
             if (taskIndex > -1) {
                 tasks[taskIndex].completed = true;
-                tasks[taskIndex].completedDate = completedDate; // Set the completed date
+                tasks[taskIndex].completedDate = completedDate;
                 chrome.storage.local.set({ tasks });
+                updateCountersAfterTaskChange();
             }
         });
     }
@@ -133,8 +143,6 @@ document.addEventListener("DOMContentLoaded", () => {
     function addTaskToCompletedList(taskText, createdDate, completedDate) {
         const li = document.createElement("li");
         li.textContent = `${taskText} (Created: ${new Date(createdDate).toLocaleString()}, Completed: ${new Date(completedDate).toLocaleString()})`;
-
-        // Insert the completed task at the beginning of the completed list
         completedList.insertBefore(li, completedList.firstChild);
     }
 
@@ -143,9 +151,24 @@ document.addEventListener("DOMContentLoaded", () => {
             const tasks = data.tasks || [];
             const taskIndex = tasks.findIndex(task => task.text === oldTaskText);
             if (taskIndex > -1) {
-                tasks[taskIndex].text = newTaskText; // Update task text
+                tasks[taskIndex].text = newTaskText;
                 chrome.storage.local.set({ tasks });
             }
+        });
+    }
+
+    function updateCounters(pendingTasks, completedTasks, totalTasks) {
+        totalCount.textContent = `Total : ${totalTasks}`;
+        pendingCount.textContent = `Pending : ${pendingTasks}`;
+        completedCount.textContent = `Completed : ${completedTasks}`;
+    }
+
+    function updateCountersAfterTaskChange() {
+        chrome.storage.local.get("tasks", (data) => {
+            const tasks = data.tasks || [];
+            const pendingTasks = tasks.filter(task => !task.completed).length;
+            const completedTasks = tasks.filter(task => task.completed).length;
+            updateCounters(pendingTasks, completedTasks, tasks.length);
         });
     }
 });
