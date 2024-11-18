@@ -91,39 +91,73 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function addTaskToList(taskText, createdDate) {
         const li = document.createElement("li");
-        li.textContent = `${taskText} (Created: ${new Date(createdDate).toLocaleString()})`;
-
+    
+        // Display task text
+        const taskContent = document.createElement("span");
+        taskContent.textContent = `${taskText} (Created: ${new Date(createdDate).toLocaleString()})`;
+        li.appendChild(taskContent);
+    
         const buttonContainer = document.createElement("div");
         buttonContainer.className = "button-container";
-
+    
         const completeButton = document.createElement("button");
         completeButton.textContent = "✓";
         completeButton.className = "complete-button";
-
+    
         completeButton.addEventListener("click", () => {
             moveToCompletedList(taskText, createdDate);
             li.remove();
             updateCountersAfterTaskChange();
         });
-
+    
         const editButton = document.createElement("button");
         editButton.textContent = "Edit";
         editButton.className = "edit-button";
-
+    
         editButton.addEventListener("click", () => {
-            const newTaskText = prompt("Edit your task:", taskText);
-            if (newTaskText !== null && newTaskText.trim()) {
-                updateTask(taskText, newTaskText, createdDate);
-                li.firstChild.nodeValue = `${newTaskText} (Created: ${new Date(createdDate).toLocaleString()})`;
-                taskText = newTaskText;
-            }
+            // Make the task text editable
+            const inputField = document.createElement("input");
+            inputField.type = "text";
+            inputField.value = taskContent.textContent.replace(` (Created: ${new Date(createdDate).toLocaleString()})`, ""); // Remove the date part
+    
+            // Replace the task content with the input field
+            li.replaceChild(inputField, taskContent);
+    
+            // Focus on the input field
+            inputField.focus();
+    
+            // Save the task when the user presses "Enter"
+            inputField.addEventListener("blur", () => {
+                const updatedTaskText = inputField.value.trim();
+                if (updatedTaskText) {
+                    updateTask(taskText, updatedTaskText, createdDate);
+                    taskContent.textContent = `${updatedTaskText} (Created: ${new Date(createdDate).toLocaleString()})`;
+                    li.replaceChild(taskContent, inputField);
+                } else {
+                    // If the user didn't update the task, just replace it back with the original text
+                    taskContent.textContent = `${taskText} (Created: ${new Date(createdDate).toLocaleString()})`;
+                    li.replaceChild(taskContent, inputField);
+                }
+            });
+    
+            // Save on pressing "Enter"
+            inputField.addEventListener("keydown", (event) => {
+                if (event.key === "Enter") {
+                    const updatedTaskText = inputField.value.trim();
+                    if (updatedTaskText) {
+                        updateTask(taskText, updatedTaskText, createdDate);
+                        taskContent.textContent = `${updatedTaskText} (Created: ${new Date(createdDate).toLocaleString()})`;
+                        li.replaceChild(taskContent, inputField);
+                    }
+                }
+            });
         });
-
+    
         buttonContainer.appendChild(editButton);
         buttonContainer.appendChild(completeButton);
         li.appendChild(buttonContainer);
         taskList.insertBefore(li, taskList.firstChild);
-    }
+    }    
 
     function moveToCompletedList(taskText, createdDate) {
         const completedDate = new Date().toISOString();
@@ -142,10 +176,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function addTaskToCompletedList(taskText, createdDate, completedDate) {
         const li = document.createElement("li");
-        li.textContent = `${taskText} (Created: ${new Date(createdDate).toLocaleString()}, Completed: ${new Date(completedDate).toLocaleString()})`;
+        
+        // Calculate the time taken to complete the task (in days)
+        const created = new Date(createdDate);
+        const completed = new Date(completedDate);
+        const timeDiff = completed - created;
+        const daysTaken = Math.floor(timeDiff / (1000 * 3600 * 24)); // Convert from milliseconds to days
+    
+        // Create the task text to include created, completed, and days taken
+        li.textContent = `${taskText} (Created: ${new Date(createdDate).toLocaleString()}, Completed: ${new Date(completedDate).toLocaleString()}, Days Taken: ${daysTaken} day(s))`;
+    
         completedList.insertBefore(li, completedList.firstChild);
     }
-
+    
     function updateTask(oldTaskText, newTaskText, createdDate) {
         chrome.storage.local.get("tasks", (data) => {
             const tasks = data.tasks || [];
