@@ -1,3 +1,7 @@
+<p align="center">
+    <img src="https://raw.githubusercontent.com/arunwebber/simple-todo/refs/heads/main/images/icon_128.png" alt="To-Do Chrome Extension Logo" />
+</p>
+
 # To-Do Chrome Extension
 
 A simple and intuitive Chrome extension to help you manage tasks effectively. With this extension, you can easily add, complete, and edit tasks. You can also track your task completion rate over time.
@@ -15,10 +19,6 @@ A simple and intuitive Chrome extension to help you manage tasks effectively. Wi
 ## Installation
 
 1. **Clone this repository:**
-
-   ```bash
-   git clone https://github.com/your-username/todo-extension.git
-   ```
 
 2. **Navigate to the Chrome Extensions page:**
 
