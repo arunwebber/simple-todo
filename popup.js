@@ -161,6 +161,8 @@ document.addEventListener("DOMContentLoaded", () => {
         totalCount.textContent = `Total : ${totalTasks}`;
         pendingCount.textContent = `Pending : ${pendingTasks}`;
         completedCount.textContent = `Completed : ${completedTasks}`;
+        //Calling function to update avg count
+        setAvgTasksPerDay(totalTasks,completedTasks);
     }
 
     function updateCountersAfterTaskChange() {
@@ -172,3 +174,35 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+function setAvgTasksPerDay(totalTasks, completedTasks) {
+
+    // Retrieve tasks from local storage
+    chrome.storage.local.get("tasks", (data) => {
+        const tasks = data.tasks || [];
+        // Find the first completed task
+        const firstCompletedTask = tasks.find(task => task.completed);
+
+        if (firstCompletedTask) {
+            const firstCompletedDate = new Date(firstCompletedTask.completedDate);
+            const today = new Date();
+
+            // Calculate the number of days between today and the first completed task date
+            const timeDiff = today - firstCompletedDate;
+            const daysPassed = Math.floor(timeDiff / (1000 * 3600 * 24)); // Convert from milliseconds to days
+
+            // Calculate average tasks per day
+            if (daysPassed > 0) {
+                const avgTasksPerDay = completedTasks / daysPassed;
+                document.getElementById("avgTasksPerDay").textContent = `(Avg Task Completion/Day: ${avgTasksPerDay.toFixed(2)})`;
+            } else {
+                document.getElementById("avgTasksPerDay").textContent = `(Avg Task Completion/Day: N/A)`;
+            }
+
+        } else {
+            console.log('No completed tasks found.');
+            document.getElementById("avgTasksPerDay").textContent = `(Avg Task/Day: N/A)`;
+        }
+    });
+}
+

@@ -1,11 +1,22 @@
 {
-    "manifest_version": 3,
-    "name": "Simple To-Do List",
-    "version": "1.0",
-    "description": "A simple browser extension to manage tasks.",
-    "action": {
-      "default_popup": "popup.html"
-    },
-    "permissions": ["storage"]
-  }
-  
+  "manifest_version": 3,
+  "name": "Simple To-Do List",
+  "version": "1.0",
+  "description": "A simple browser extension to manage tasks.",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/icon_16.png",
+      "48": "images/icon_48.png",
+      "128": "images/icon_128.png"
+    }
+  },
+  "permissions": ["storage"],
+  "icons": {
+    "16": "images/icon_16.png",
+    "48": "images/icon_48.png",
+    "128": "images/icon_128.png"
+  },
+  "homepage_url": "https://www.arunsyoga.in",
+  "author": "HashPalLabs"
+}

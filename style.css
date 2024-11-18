@@ -136,3 +136,15 @@ li.completed {
 li:hover {
     background-color: #f1f1f1; /* Light hover effect */
 }
+
+#avgTasksPerDay {
+    margin-left: 10px; /* Adds a small gap between the average tasks counter and others */
+    text-align: center; /* Centers the text horizontally */
+    display: flex; /* Enables flexbox layout */
+    justify-content: center; /* Centers the content horizontally (works with flexbox) */
+    align-items: center; /* Centers the content vertically (works with flexbox) */
+    height: 100%; /* Ensure the container has height for vertical centering */
+    font-size: 12px; /* Increases the font size */
+    font-weight: bold; /* Makes the text bold */
+}
+
