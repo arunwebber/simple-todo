@@ -5,6 +5,7 @@ body {
     background-color: #f7f7f7;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin: auto; /* Centering the body */
 }
 
 h1 {
@@ -34,6 +35,7 @@ button {
     font-size: 16px;
     box-sizing: border-box; /* Include padding in width calculation */
     margin-bottom: 10px; /* Space between buttons */
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
@@ -53,6 +55,7 @@ button:hover {
     border: none; /* Remove border */
     border-radius: 4px; /* Match tab shape */
     cursor: pointer; /* Change cursor on hover */
+    transition: background-color 0.3s ease;
 }
 
 #dueTab {
@@ -74,6 +77,7 @@ button:hover {
 ul {
     list-style-type: none;
     padding: 0;
+    margin: 0;
 }
 
 li {
@@ -84,7 +88,7 @@ li {
     border: 1px solid #ddd;
     border-radius: 4px;
     margin-bottom: 10px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease;
 }
 
 li span {
@@ -100,14 +104,14 @@ li span {
 }
 
 /* Styles for individual buttons */
-.complete-button, .edit-button {
+.complete-button, .edit-button, .delete-button {
     width: 48%; /* Make sure buttons take up equal space */
-    height: 20px; /* Match height with other buttons */
+    height: 30px; /* Increased height for better usability */
     border: none; /* Remove border */
     border-radius: 4px; /* Match shape */
     color: white; /* Text color */
     cursor: pointer; /* Change cursor on hover */
-    transition: background-color 0.3s; /* Add transition for hover effects */
+    transition: background-color 0.3s ease; /* Add transition for hover effects */
 }
 
 .complete-button {
@@ -124,6 +128,14 @@ li span {
 
 .edit-button:hover {
     background-color: #0069d9; /* Darker Blue for hover effect */
+}
+
+.delete-button {
+    background-color: #db4112; /* Red for Delete button */
+}
+
+.delete-button:hover {
+    background-color: #ff0000; /* Darker Red for hover effect */
 }
 
 /* Add completed task styles */
@@ -161,4 +173,30 @@ li:hover {
     line-height: 1; /* Tightest spacing for single-line text */
     overflow: hidden; /* Prevent any content overflow */
     white-space: nowrap; /* Ensure the text doesn't wrap to a new line */
+}
+
+/* Default task background colors */
+li.red {
+    background-color: #ffcccc; /* Light red for more than 10 days */
+}
+
+li.yellow {
+    background-color: #ffff99; /* Light yellow for between 5 and 10 days */
+}
+
+li.green {
+    background-color: #ccffcc; /* Light green for less than 5 days */
+}
+
+/* Hover effect for tasks */
+li.red:hover {
+    background-color: #ff9999; /* Darker red on hover */
+}
+
+li.yellow:hover {
+    background-color: #ffff66; /* Darker yellow on hover */
+}
+
+li.green:hover {
+    background-color: #b3ffb3; /* Darker green on hover */
 }

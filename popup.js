@@ -97,9 +97,24 @@ document.addEventListener("DOMContentLoaded", () => {
         taskContent.textContent = `${taskText} (Created: ${new Date(createdDate).toLocaleString()})`;
         li.appendChild(taskContent);
     
+        // Calculate days since task creation
+        const currentDate = new Date();
+        const creationDate = new Date(createdDate);
+        const daysSinceCreation = Math.floor((currentDate - creationDate) / (1000 * 60 * 60 * 24));
+    
+        // Set the appropriate class based on days since creation
+        if (daysSinceCreation > 10) {
+            li.classList.add("red"); // More than 10 days -> Red
+        } else if (daysSinceCreation >= 5) {
+            li.classList.add("yellow"); // Between 5 and 10 days -> Yellow
+        } else {
+            li.classList.add("green"); // Less than 5 days -> Green
+        }
+            
         const buttonContainer = document.createElement("div");
         buttonContainer.className = "button-container";
     
+        // Complete button
         const completeButton = document.createElement("button");
         completeButton.textContent = "✓";
         completeButton.className = "complete-button";
@@ -110,23 +125,19 @@ document.addEventListener("DOMContentLoaded", () => {
             updateCountersAfterTaskChange();
         });
     
+        // Edit button
         const editButton = document.createElement("button");
         editButton.textContent = "Edit";
         editButton.className = "edit-button";
     
         editButton.addEventListener("click", () => {
-            // Make the task text editable
             const inputField = document.createElement("input");
             inputField.type = "text";
-            inputField.value = taskContent.textContent.replace(` (Created: ${new Date(createdDate).toLocaleString()})`, ""); // Remove the date part
+            inputField.value = taskContent.textContent.replace(` (Created: ${new Date(createdDate).toLocaleString()})`, "");
     
-            // Replace the task content with the input field
             li.replaceChild(inputField, taskContent);
-    
-            // Focus on the input field
             inputField.focus();
     
-            // Save the task when the user presses "Enter"
             inputField.addEventListener("blur", () => {
                 const updatedTaskText = inputField.value.trim();
                 if (updatedTaskText) {
@@ -134,13 +145,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     taskContent.textContent = `${updatedTaskText} (Created: ${new Date(createdDate).toLocaleString()})`;
                     li.replaceChild(taskContent, inputField);
                 } else {
-                    // If the user didn't update the task, just replace it back with the original text
                     taskContent.textContent = `${taskText} (Created: ${new Date(createdDate).toLocaleString()})`;
                     li.replaceChild(taskContent, inputField);
                 }
             });
     
-            // Save on pressing "Enter"
             inputField.addEventListener("keydown", (event) => {
                 if (event.key === "Enter") {
                     const updatedTaskText = inputField.value.trim();
@@ -153,11 +162,28 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
     
+        // Delete button
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.className = "delete-button";
+    
+        deleteButton.addEventListener("click", () => {
+            li.remove();
+            chrome.storage.local.get("tasks", (data) => {
+                const tasks = data.tasks || [];
+                const updatedTasks = tasks.filter(task => task.text !== taskText);
+                chrome.storage.local.set({ tasks: updatedTasks });
+                updateCountersAfterTaskChange();
+            });
+        });
+    
         buttonContainer.appendChild(editButton);
         buttonContainer.appendChild(completeButton);
+        buttonContainer.appendChild(deleteButton);
         li.appendChild(buttonContainer);
         taskList.insertBefore(li, taskList.firstChild);
-    }    
+    }
+            
 
     function moveToCompletedList(taskText, createdDate) {
         const completedDate = new Date().toISOString();
@@ -183,11 +209,22 @@ document.addEventListener("DOMContentLoaded", () => {
         const timeDiff = completed - created;
         const daysTaken = Math.floor(timeDiff / (1000 * 3600 * 24)); // Convert from milliseconds to days
     
-        // Create the task text to include created, completed, and days taken
-        li.textContent = `${taskText} (Created: ${new Date(createdDate).toLocaleString()}, Completed: ${new Date(completedDate).toLocaleString()}, Days Taken: ${daysTaken} day(s))`;
+        // Add appropriate class based on the number of days taken to complete
+        if (daysTaken > 10) {
+            li.classList.add("red"); // More than 10 days
+        } else if (daysTaken >= 5) {
+            li.classList.add("yellow"); // Between 5 and 10 days
+        } else {
+            li.classList.add("green"); // Less than 5 days
+        }
     
+        // Create the task text to include created, completed, and days taken
+        li.innerHTML = `${taskText} <p>(<font color="red">Created: ${new Date(createdDate).toLocaleString()}</font>, <font color="green">Completed: ${new Date(completedDate).toLocaleString()}</font>, <font color="darkgoldenrod">Days Taken: ${daysTaken} day(s))</font></p>`;
+        
+        // Append the task to the completed list
         completedList.insertBefore(li, completedList.firstChild);
     }
+    
     
     function updateTask(oldTaskText, newTaskText, createdDate) {
         chrome.storage.local.get("tasks", (data) => {
