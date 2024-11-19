@@ -232,7 +232,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const taskIndex = tasks.findIndex(task => task.text === oldTaskText);
             if (taskIndex > -1) {
                 tasks[taskIndex].text = newTaskText;
-                chrome.storage.local.set({ tasks });
+                chrome.storage.local.set({ tasks }, () => {
+                    // Reload the task list to reflect changes
+                    loadTasks();
+                });
             }
         });
     }
@@ -274,9 +277,9 @@ function setAvgTasksPerDay(totalTasks, completedTasks) {
             // Calculate average tasks per day
             if (daysPassed > 0) {
                 const avgTasksPerDay = completedTasks / daysPassed;
-                document.getElementById("avgTasksPerDay").textContent = `(Avg Task Completion/Day: ${avgTasksPerDay.toFixed(2)})`;
+                document.getElementById("avgTasksPerDay").textContent = `Avg Task Completion/Day: ${avgTasksPerDay.toFixed(2)}`;
             } else {
-                document.getElementById("avgTasksPerDay").textContent = `(Avg Task Completion/Day: N/A)`;
+                document.getElementById("avgTasksPerDay").textContent = `Avg Task Completion/Day: N/A`;
             }
 
         } else {
