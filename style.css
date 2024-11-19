@@ -150,15 +150,24 @@ li:hover {
 }
 
 #avgTasksPerDay {
-    margin-left: 10px; /* Adds a small gap between the average tasks counter and others */
+    margin-top: 10px; /* Adds some space above the counter */
+    padding: 10px; /* Add padding inside the container */
+    border: 2px solid #ddd; /* Light border for the area */
+    border-radius: 10px; /* Rounded edges */
+    background-color: #f9f9f9; /* Light background for better readability */
     text-align: center; /* Centers the text horizontally */
-    display: flex; /* Enables flexbox layout */
-    justify-content: center; /* Centers the content horizontally (works with flexbox) */
-    align-items: center; /* Centers the content vertically (works with flexbox) */
-    height: 100%; /* Ensure the container has height for vertical centering */
-    font-size: 12px; /* Increases the font size */
+    display: flex; /* Flexbox layout for full width */
+    justify-content: center; /* Centers content horizontally */
+    align-items: center; /* Centers content vertically */
+    font-size: 14px; /* Slightly larger font size for better readability */
     font-weight: bold; /* Makes the text bold */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow for depth */
+    color: #333; /* Dark text color for contrast */
+    width: 100%; /* Ensures it spans the full width of the parent container */
+    box-sizing: border-box; /* Includes padding and border in width calculation */
 }
+
+
 
 /* Footer styling */
 #footer {
