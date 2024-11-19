@@ -3,6 +3,7 @@
   "name": "Simple To-Do List",
   "version": "1.0",
   "description": "A simple browser extension to manage tasks.",
+  "permissions": ["storage"],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -11,7 +12,6 @@
       "128": "images/icon_128.png"
     }
   },
-  "permissions": ["storage"],
   "icons": {
     "16": "images/icon_16.png",
     "48": "images/icon_48.png",
