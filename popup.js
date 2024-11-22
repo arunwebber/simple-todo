@@ -259,12 +259,13 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function setAvgTasksPerDay(totalTasks, completedTasks) {
-
     // Retrieve tasks from local storage
     chrome.storage.local.get("tasks", (data) => {
         const tasks = data.tasks || [];
         // Find the first completed task
         const firstCompletedTask = tasks.find(task => task.completed);
+
+        const avgTasksElement = document.getElementById("avgTasksPerDay");
 
         if (firstCompletedTask) {
             const firstCompletedDate = new Date(firstCompletedTask.completedDate);
@@ -277,15 +278,27 @@ function setAvgTasksPerDay(totalTasks, completedTasks) {
             // Calculate average tasks per day
             if (daysPassed > 0) {
                 const avgTasksPerDay = completedTasks / daysPassed;
-                document.getElementById("avgTasksPerDay").textContent = `Avg Task Completion/Day: ${avgTasksPerDay.toFixed(2)}`;
+                avgTasksElement.textContent = `Avg Task Completion/Day: ${avgTasksPerDay.toFixed(2)}`;
+
+                // Change the box color based on the average
+                if (avgTasksPerDay < 5) {
+                    avgTasksElement.style.backgroundColor = "red";
+                } else if (avgTasksPerDay >= 5 && avgTasksPerDay < 10) {
+                    avgTasksElement.style.backgroundColor = "yellow";
+                } else {
+                    avgTasksElement.style.backgroundColor = "green";
+                }
             } else {
-                document.getElementById("avgTasksPerDay").textContent = `Avg Task Completion/Day: N/A`;
+                avgTasksElement.textContent = `Avg Task Completion/Day: N/A`;
+                avgTasksElement.style.backgroundColor = ""; // Reset color
             }
 
         } else {
             console.log('No completed tasks found.');
-            document.getElementById("avgTasksPerDay").textContent = `(Avg Task/Day: N/A)`;
+            avgTasksElement.textContent = `(Avg Task/Day: N/A)`;
+            avgTasksElement.style.backgroundColor = ""; // Reset color
         }
     });
 }
+
 
