@@ -202,7 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function addTaskToCompletedList(taskText, createdDate, completedDate) {
         const li = document.createElement("li");
-        
+    
         // Calculate the time taken to complete the task (in days)
         const created = new Date(createdDate);
         const completed = new Date(completedDate);
@@ -221,9 +221,23 @@ document.addEventListener("DOMContentLoaded", () => {
         // Create the task text to include created, completed, and days taken
         li.innerHTML = `${taskText} <p>(<font color="red">Created: ${new Date(createdDate).toLocaleString()}</font>, <font color="green">Completed: ${new Date(completedDate).toLocaleString()}</font>, <font color="darkgoldenrod">Days Taken: ${daysTaken} day(s))</font></p>`;
         
+        // Create Redo button
+        const redoButton = document.createElement("button");
+        redoButton.textContent = "Redo";
+        redoButton.className = "redo-button";
+    
+        redoButton.addEventListener("click", () => {
+            moveToPendingList(taskText, createdDate);
+            li.remove();
+            updateCountersAfterTaskChange();
+        });
+    
+        // Append the redo button to the task
+        li.appendChild(redoButton);
+    
         // Append the task to the completed list
         completedList.insertBefore(li, completedList.firstChild);
-    }
+    }    
     
     
     function updateTask(oldTaskText, newTaskText, createdDate) {
@@ -254,6 +268,21 @@ document.addEventListener("DOMContentLoaded", () => {
             const pendingTasks = tasks.filter(task => !task.completed).length;
             const completedTasks = tasks.filter(task => task.completed).length;
             updateCounters(pendingTasks, completedTasks, tasks.length);
+        });
+    }
+
+    function moveToPendingList(taskText, createdDate) {
+        addTaskToList(taskText, createdDate);
+    
+        chrome.storage.local.get("tasks", (data) => {
+            const tasks = data.tasks || [];
+            const taskIndex = tasks.findIndex(task => task.text === taskText);
+            if (taskIndex > -1) {
+                tasks[taskIndex].completed = false;
+                delete tasks[taskIndex].completedDate; // Clear completedDate when moving back to pending
+                chrome.storage.local.set({ tasks });
+                updateCountersAfterTaskChange();
+            }
         });
     }
 });
@@ -300,5 +329,7 @@ function setAvgTasksPerDay(totalTasks, completedTasks) {
         }
     });
 }
+
+
 
 

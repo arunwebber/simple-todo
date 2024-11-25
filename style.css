@@ -209,3 +209,32 @@ li.yellow:hover {
 li.green:hover {
     background-color: #b3ffb3; /* Darker green on hover */
 }
+
+/* Redo Button Styles */
+.redo-button {
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    border: none;
+    padding: 8px 16px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.redo-button:hover {
+    background-color: #45a049; /* Slightly darker green on hover */
+}
+
+.redo-button:active {
+    background-color: #3e8e41; /* Darker green when pressed */
+}
+
+.redo-button:focus {
+    outline: none; /* Remove default focus outline */
+    box-shadow: 0 0 5px 2px rgba(0, 255, 0, 0.5); /* Add a green glow on focus */
+}
+
